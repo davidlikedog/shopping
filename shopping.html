@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>shopping</title>
+</head>
+<body>
+<script type="text/javascript">
+    var barcodes = [
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000003',
+        'ITEM000001',
+        'ITEM000003',
+        'ITEM000005',
+        'ITEM000005',
+        'ITEM000005'
+    ];
+
+    var products = [
+        {
+            barcode: 'ITEM000005',
+            name: '可口可乐',
+            unit: '瓶',
+            price: 3.00
+        },
+        {
+            barcode: 'ITEM000003',
+            name: '苹果',
+            unit: '斤',
+            price: 5.50
+        },
+        {
+            barcode: 'ITEM000001',
+            name: '羽毛球',
+            unit: '个',
+            price: 1.00
+        }
+    ];
+
+    var shopMap = {};
+    for (var i = 0; i < barcodes.length; i++) {
+        if (shopMap[barcodes[i]] === undefined) {
+            shopMap[barcodes[i]] = 1;
+        } else {
+            shopMap[barcodes[i]] += 1;
+        }
+    }
+    console.log(shopMap);
+
+    var productList={};
+    for(var t=0;t<products.length;t++) {
+        productList[products[t].barcode]=products[t];
+    }
+    console.log(productList);
+    var total=0;
+    for(var number in shopMap) {
+        var count = shopMap[number];
+        var produce=productList[number];
+        var name= produce.name;
+        var unit= produce.unit;
+        var price= produce.price.toFixed(2);
+        console.log("商品名称："+name+" 商品数量："+count+" "+unit+" 商品单价："+price+" 元");
+        total+=(count*price);
+    }
+    console.log("总价为：" + total.toFixed(2)+" 元");
+</script>
+</body>
+</html>

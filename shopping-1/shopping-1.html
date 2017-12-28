@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>shopping-1</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript" src="shopping-1.js"></script>
+<script type="text/javascript">
+    var allShopping = loadAllItems();
+    var buyTwoGetOneFree = loadPromotions()[0].barcodes;
+    var inputs_order = [
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000003-2',
+        'ITEM000002-2',
+        'ITEM000005',
+        'ITEM000005',
+        'ITEM000005'
+    ];
+
+    function printShoppingList(allShopping, buyTwoGetOneFree, inputs_order) {
+        var contentText="---购物清单--------\n";
+
+        var shoppingList = {};
+        for (var i = 0; i < allShopping.length; i++) {
+            shoppingList[allShopping[i].barcode] = allShopping[i];
+        }
+
+        var goods = {};
+        for (var a = 0; a < inputs_order.length; a++) {
+            if (inputs_order[a].indexOf("-") === -1) {
+                if (goods[inputs_order[a]] === undefined) {
+                    goods[inputs_order[a]] = 1;
+                } else {
+                    goods[inputs_order[a]] += 1;
+                }
+            } else if (inputs_order[a].indexOf("-") !== -1) {
+                var fixList = inputs_order[a].split("-");
+                for (var h = 0; h < fixList[1]; h++) {
+                    if (goods[fixList[0]] === undefined) {
+                        goods[fixList[0]] = parseInt(fixList[1]);
+                    }
+                }
+            }
+        }
+
+        var getOne = {};
+        for (var s = 0; s < buyTwoGetOneFree.length; s++) {
+            getOne[buyTwoGetOneFree[s]] = buyTwoGetOneFree[s];
+        }
+
+        function getNameEtc(goods1, shoppingList1, buy) {
+            for (var y1 in goods1) {
+                var count = goods1[y1];
+                var currentGoods = shoppingList1[y1];
+                var name = currentGoods.name;
+                var unit = currentGoods.unit;
+                var price = currentGoods.price.toFixed(2);
+                if (buy === "buy") {
+                    if (count >= 2) {
+                        freeGetOne[y1] = y1;
+                    }
+                    total += (count * price);
+                    contentText+="商品名：" + name + " 数量：" + count + " " + unit + " 单价：" + price +"(元)"+ " 小计：" + (count * price).toFixed(2) + "(元)\n";
+                } else if (buy === "sendGift") {
+                    giftTotal += (count * price);
+                    contentText+="赠送商品名：" + name + " 数量：" + count + " " + unit + " 单价：" + price +"(元)"+ " 小计：" + (count * price).toFixed(2) + "(元)\n";
+                }
+            }
+        }
+
+        var freeGetOne = {};
+        var total = 0;
+        getNameEtc(goods, shoppingList, "buy");
+        contentText+="---挥泪赠送的商品：--------------\n";
+
+        var gift = {};
+        for (var key in getOne) {
+            if (getOne[freeGetOne[key]]) {
+                gift[key] = 1;
+            }
+        }
+
+        var giftTotal = 0;
+        getNameEtc(gift, shoppingList, "sendGift");
+        contentText+="----小计：-------\n";
+        contentText+="总价为：" + total.toFixed(2) + "(元)" + "\n赠品总价为：" + giftTotal.toFixed(2) + "(元)\n";
+        console.log(contentText);
+    }
+
+    printShoppingList(allShopping, buyTwoGetOneFree, inputs_order);
+</script>
+</html>
