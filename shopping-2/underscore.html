@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script src="underscore.js"></script>
+<script src="shopping-2.js"></script>
+<script type="text/javascript">
+
+    var barcodes = [
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000003',
+        'ITEM000001',
+        'ITEM000003',
+        'ITEM000005',
+        'ITEM000005',
+        'ITEM000005'
+    ];
+
+    var products = [
+        {
+            barcode: 'ITEM000005',
+            name: '可口可乐',
+            unit: '瓶',
+            price: 3.00
+        },
+        {
+            barcode: 'ITEM000003',
+            name: '苹果',
+            unit: '斤',
+            price: 5.50
+        },
+        {
+            barcode: 'ITEM000001',
+            name: '羽毛球',
+            unit: '个',
+            price: 1.00
+        }
+    ];
+
+    var inputs_order = [
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000003-2',
+        'ITEM000002-2',
+        'ITEM000005',
+        'ITEM000005',
+        'ITEM000005'
+    ];
+
+    var goods = {};
+    _.each(products, function (product) {
+        goods[product.barcode] = product;
+    });
+
+    var list = _.chain(barcodes)
+        .groupBy(function (barcode) {
+            return barcode;
+        }).map(function (item) {
+            return {
+                barcode: item[0],
+                count: item.length
+            }
+        }).map(function (item) {
+            var storage = goods[item.barcode];
+            return "name :" + storage.name + " 数量：" + item.count;
+        }).reduce(function (first, second) {
+            return first + "\n" + second;
+        }).value();
+    console.log(list);
+
+
+    /*---分界线-----------*/
+
+    var storageList = loadAllItems();
+    var buyTwoGetOneFree = loadPromotions()[0].barcodes;
+    var objStorageList = {};
+    _.each(storageList, function (item) {
+        objStorageList[item.barcode] = item;
+    });
+
+    var newOrderList = {};
+    _.chain(inputs_order)
+        .filter(function (item) {
+            return item.indexOf("-") !== -1;
+        }).map(function (item) {
+        var split = item.split("-");
+        newOrderList[split[0]] = parseInt(split[1]);
+    });
+    _.chain(inputs_order)
+        .filter(function (item) {
+            return item.indexOf("-") === -1;
+        }).groupBy(function (item) {
+        return item
+    }).map(function (item) {
+        newOrderList[item[0]] = item.length;
+    });
+    var cheapGoodsList = _.chain(newOrderList)
+        .map(function (item, key) {
+            var storageCheap = objStorageList[key];
+            return "name: " + storageCheap.name + " count: " + item + " " + storageCheap.unit + " price: $" + storageCheap.price.toFixed(2) + " cost: $" + (storageCheap.price * item).toFixed(2);
+        }).reduce(function (first, second) {
+            return first + "\n" + second;
+        }).value();
+    var freeGoods = _.chain(newOrderList)
+        .map(function (item1, key1) {
+            return {
+                barcode1: key1,
+                count1: item1
+            }
+        }).value();
+    console.log(cheapGoodsList);
+    var useBuyTwoGetOneFree = {};
+    _.map(buyTwoGetOneFree, function (item) {
+        useBuyTwoGetOneFree[item] = item;
+    });
+    console.log("-----免费赠送的商品-----");
+    for (var i = 0; i < freeGoods.length; i++) {
+        if (freeGoods[i].count1 >= 2 && useBuyTwoGetOneFree[freeGoods[i].barcode1]) {
+            var freeGoodsReal = objStorageList[freeGoods[i].barcode1];
+            console.log("名称：" + freeGoodsReal.name + " 数量：1");
+        }
+    }
+
+
+</script>
+</html>
