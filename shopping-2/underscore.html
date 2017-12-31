@@ -97,6 +97,7 @@
         var split = item.split("-");
         newOrderList[split[0]] = parseInt(split[1]);
     });
+    console.log(newOrderList);
     _.chain(inputs_order)
         .filter(function (item) {
             return item.indexOf("-") === -1;
@@ -131,6 +132,12 @@
             console.log("名称：" + freeGoodsReal.name + " 数量：1");
         }
     }
+    // _.chain(freeGoods).filter(function (item) {
+    //     return freeGoods[0].count1 >= 2 && useBuyTwoGetOneFree[freeGoods[0].barcode1];
+    // }).each(function (value) {
+    //     var freeGoodsReal = objStorageList[freeGoods[0].barcode1];
+    //     console.log("名称：" + freeGoodsReal.name + " 数量：1");
+    // });
 
 
 </script>
